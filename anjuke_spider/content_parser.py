@@ -33,12 +33,16 @@ class HtmlParser(object):
                     price = item.find('p', class_='price').find('span').string  # 参考价格
                     discount = item.find('em', class_='discount-txt').string    # 折扣优惠
                     location = item.find('p', class_='address').find('a', class_='list-map').string.rstrip('...')  # 地理位置
+                    telephone = item.find('p', class_='tel').get_text() # 联系电话
                     link = item.find('a', class_='items-name')['href']
                     code = link.split('/')[-1].split('.')[0]
                     # comment = self.get_comment(code) # 网友评论
                     #
                     # print name, len(comment)
                     # print '---------'
+                    if int(price) < 10000:
+                        continue
+
 
 
                 except:
@@ -50,12 +54,15 @@ class HtmlParser(object):
                     res_data['price'] = price
                     res_data['discount'] = discount
                     res_data['location'] = location
+                    res_data['telephone'] = telephone
                     # res_data['comment'] = comment
                     data_list.append(res_data)
                 except:
                     pass
 
             return data_list
+        else:
+            return None
 
     def get_comment(self, code):
         comment = []

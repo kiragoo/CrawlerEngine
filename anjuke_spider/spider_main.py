@@ -21,7 +21,7 @@ class SpiderMain(object):
         count = 1
         self.urls.add_new_url(root_url)
 
-        # self.outputer.prepare_csv()    # 准备csv文件
+        self.outputer.prepare_csv()    # 准备csv文件
         while self.urls.has_new_url():
             new_url = self.urls.get_new_url()
             print "[craw %d]: %s" % (count, new_url)
@@ -30,16 +30,16 @@ class SpiderMain(object):
             new_url, new_data = self.parser.parse(new_url, html_cont)
 
             print "[new_data]: ", new_data
-            # self.outputer.output_csv(new_data)    # 写入csv文件
+            self.outputer.output_csv(new_data)    # 写入csv文件
 
-            self.mongodb_outputer.ContentSave(new_data)
+            # self.mongodb_outputer.ContentSave(new_data)
 
             self.urls.add_new_urls(new_url)
 
-            if count == 20:
-                break
+            # if count == 20:
+            #     break
             count += 1
-        # self.outputer.close_csv()    # 关闭csv文件
+        self.outputer.close_csv()    # 关闭csv文件
 
 
 

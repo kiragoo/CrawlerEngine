@@ -49,6 +49,7 @@ class MongodbOutputer(object):
                 "price": data['price'],
                 "discount": data['discount'],
                 "location": data['location'],
+                "telephone": data['telephone']
             }
             self.ResultSave(save_content)
 
@@ -65,7 +66,7 @@ class CsvOutputer(object):
         csvfile.write(codecs.BOM_UTF8)
 
         writer = csv.writer(csvfile)
-        writer.writerow(['名称', '状态', '价格', '折扣', '位置'])
+        writer.writerow(['名称', '状态', '价格', '折扣', '位置', '电话'])
         csvfile.close()
 
     def output_csv(self, data_list):
@@ -74,10 +75,18 @@ class CsvOutputer(object):
         csvfile.write(codecs.BOM_UTF8)
 
         writer = csv.writer(csvfile)
-        for data in data_list:
-            value = [data['name'], data['status'], data['price'], data['discount'], data['location']]
-            # print "******", value
-            writer.writerow(value)
+
+        try:
+            if data_list:
+                for data in data_list:
+                    value = [data['name'], data['status'], data['price'], data['discount'], data['location'], data['telephone']]
+                    # print "******", value
+                    writer.writerow(value)
+            else:
+                pass
+
+        except Exception as e:
+            print e
 
         if self.close_signal:
             csvfile.close()
