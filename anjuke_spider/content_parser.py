@@ -18,7 +18,7 @@ class HtmlParser(object):
         return new_urls
 
     def _get_new_data(self, page_url, soup):
-        res_data = {}
+        data_list = []
         # soup = soup.prettify().encode('utf-8')
         # with open('html_cont.txt', 'wb') as f:
         #     f.writelines(soup)
@@ -26,29 +26,36 @@ class HtmlParser(object):
             items = soup.find_all('div', attrs={"data-soj": re.compile("AF_RANK")})
             # print len(items)
             for item in items:
+                res_data = {}
                 try:
-                    name = item.find('a', class_='items-name').string
-                    status = item.find_all('i', class_='status-icon')
-                    price = item.find('p', class_='price').find('span').string
-                    discount = item.find('em', class_='discount-txt').string
-                    location = item.find('p', class_='address').find('a', class_='list-map').string
+                    name = item.find('a', class_='items-name').string   # 房产名称
+                    status = item.find_all('i', class_='status-icon')[0].string  # 状态(待售,在售)
+                    price = item.find('p', class_='price').find('span').string  # 参考价格
+                    discount = item.find('em', class_='discount-txt').string    # 折扣优惠
+                    location = item.find('p', class_='address').find('a', class_='list-map').string.rstrip('...')  # 地理位置
                     link = item.find('a', class_='items-name')['href']
                     code = link.split('/')[-1].split('.')[0]
-                    comment = self.get_comment(code)
+                    # comment = self.get_comment(code) # 网友评论
                     #
                     # print name, len(comment)
                     # print '---------'
 
+
                 except:
                     continue
 
-            res_data['name'] = name
-            res_data['status'] = status
-            res_data['price'] = price
-            res_data['discount'] = discount
-            res_data['location'] = location
-            res_data['comment'] = comment
-            return res_data
+                try:
+                    res_data['name'] = name
+                    res_data['status'] = status
+                    res_data['price'] = price
+                    res_data['discount'] = discount
+                    res_data['location'] = location
+                    # res_data['comment'] = comment
+                    data_list.append(res_data)
+                except:
+                    pass
+
+            return data_list
 
     def get_comment(self, code):
         comment = []
