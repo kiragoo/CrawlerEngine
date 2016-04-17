@@ -4,8 +4,7 @@ import csv
 import pymongo
 
 
-class MongoDBIO:
-    # 申明相关的属性
+class MongoDBIO(object):
     def __init__(self, host, port, name, password, database, collection):
         self.host = host
         self.port = port
@@ -14,29 +13,52 @@ class MongoDBIO:
         self.database = database
         self.collection = collection
 
-    # 连接数据库，db和posts为数据库和集合的游标
     def Connection(self):
-        # connection = pymongo.MongoClient() # 连接本地数据库
         connection = pymongo.MongoClient(host=self.host, port=self.port)
         # db = connection.datas
         db = connection[self.database]
         if self.name or self.password:
-            db.authenticate(name=self.name, password=self.password) # 验证用户名密码
+            db.authenticate(name=self.name, password=self.password)
         # print "Database:", db.name
         posts = db[self.collection]
         # print "Collection:", posts.name
         return posts
 
 
+class MongodbOutputer(object):
+    def __init__(self):
+        self.save_host = "localhost"
+        self.save_port = 27017
+        self.save_name = ""
+        self.save_password = ""
+        self.save_database = "house_info"
+        self.save_collection = "zhengzhou"
+
+    def ResultSave(self, save_content):
+        posts = MongoDBIO(self.save_host, self.save_port, self.save_name, self.save_password, self.save_database,
+                        self.save_collection).Connection()
+
+        posts.save(save_content)
+
+    def ContentSave(self, data_list):
+        # 保存配置
+        for data in data_list:
+            save_content = {
+                "name": data['name'],
+                "status": data['status'],
+                "price": data['price'],
+                "discount": data['discount'],
+                "location": data['location'],
+            }
+            self.ResultSave(save_content)
+
+
+
+
 
 class CsvOutputer(object):
     def __init__(self):
-        self.datas = []
         self.close_signal = False
-
-    def collect_data(self, data):
-        if len(data) != 0:
-            self.datas.append(data)
 
     def prepare_csv(self):
         csvfile = open('anjuke_zz.csv', 'wb')
@@ -62,16 +84,3 @@ class CsvOutputer(object):
 
     def close_csv(self):
         self.close_signal = True
-
-
-
-class TxtOutputer(object):
-    pass
-    # fout = open('output.txt', 'w')
-    # for data in self.datas:
-    #     if data['title'] and data['year'] and data['director'] and data['rating_num']:
-    #     fout.write(data['title'])
-    #     fout.write(data['year'])
-    #     fout.write(data['director'])
-    #     fout.write(data['rating_num'])
-    #     fout.write("\n")
