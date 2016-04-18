@@ -7,6 +7,8 @@ import downloader
 
 
 class HtmlParser(object):
+    def __init__(self):
+        self.name_list = []
 
     def _get_new_urls(self, page_url, soup):
         new_urls = set()
@@ -28,7 +30,7 @@ class HtmlParser(object):
             for item in items:
                 res_data = {}
                 try:
-                    name = item.find('a', class_='items-name').string   # 房产名称
+                    name = item.find('a', class_='items-name').string.lstrip()  # 房产名称
                     status = item.find_all('i', class_='status-icon')[0].string  # 状态(待售,在售)
                     price = item.find('p', class_='price').find('span').string  # 参考价格
                     discount = item.find('em', class_='discount-txt').string    # 折扣优惠
@@ -40,10 +42,12 @@ class HtmlParser(object):
                     code = link.split('/')[-1].split('.')[0]
                     # comment = self.get_comment(code) # 网友评论
 
-                    if int(price) < 10000:
+                    # 设置待爬价格区间
+                    # if int(price) < 8000 or int(price) >= 10000:
+                    #     continue
+
+                    if name in self.name_list:
                         continue
-
-
 
                 except:
                     continue
@@ -59,6 +63,8 @@ class HtmlParser(object):
                     data_list.append(res_data)
 
                     # res_data['comment'] = comment
+
+                    self.name_list.append(name)
 
                 except:
                     pass
