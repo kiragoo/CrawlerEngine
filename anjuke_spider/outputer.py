@@ -66,7 +66,7 @@ class CsvOutputer(object):
         csvfile.write(codecs.BOM_UTF8)
 
         writer = csv.writer(csvfile)
-        writer.writerow(['名称', '状态', '价格', '折扣', '位置', '电话'])
+        writer.writerow(['名称', '状态', '价格', '折扣', '位置', '特点', '电话'])
         csvfile.close()
 
     def output_csv(self, data_list):
@@ -79,7 +79,7 @@ class CsvOutputer(object):
         try:
             if data_list:
                 for data in data_list:
-                    value = [data['name'], data['status'], data['price'], data['discount'], data['location'], data['telephone']]
+                    value = [data['name'], data['status'], data['price'], data['discount'], data['location'], data['feature'], data['telephone']]
                     # print "******", value
                     writer.writerow(value)
             else:

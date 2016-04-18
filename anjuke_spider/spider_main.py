@@ -42,7 +42,6 @@ class SpiderMain(object):
         self.outputer.close_csv()    # 关闭csv文件
 
 
-
 if __name__ == "__main__":
     root_url = "http://zz.fang.anjuke.com/"
     obj_spider = SpiderMain()
